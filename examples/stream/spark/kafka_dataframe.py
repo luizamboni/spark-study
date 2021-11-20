@@ -6,18 +6,18 @@ from pyspark.streaming import StreamingContext
 if __name__ == "__main__":
     if len(sys.argv) != 4:
       print(
-        "Usage: network_wordcount.py <hostname> <port>", 
+        "Usage: *.py <hostname> <port>", 
         file=sys.stderr
       )
       sys.exit(-1)
-    
-    sc = SparkContext(appName="PythonStreamingNetworkWordCount")
-    sc.setLogLevel("ERROR")
-    
+  
     host = sys.argv[1]
     port = int(sys.argv[2])
     topic = sys.argv[3]
 
+    sc = SparkContext(appName="PythonStreamingNetworkWordCount")
+    sc.setLogLevel("ERROR")
+    
     per_topic_partitions = {
         topic: 1,
     }
