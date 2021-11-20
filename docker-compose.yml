@@ -1,0 +1,43 @@
+version: '3.3'
+services:
+
+  zookeeper:
+    image: bitnami/zookeeper:3.7
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+
+  kafka:
+    image: bitnami/kafka:3
+    ports: 
+      - 9094:9094
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://kafka:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+    depends_on:
+      - zookeeper
+
+  glue:
+    image: amazon/aws-glue-libs:glue_libs_1.0.0_image_01
+    ports:
+      - 8888:8888
+      - 4040:4040
+      - 9999:9999
+    environment:
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/maven/bin:/home/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8/bin/"
+
+    volumes:
+      - ~/.aws:/root/.aws:ro
+      - ./examples/:/home/project
+    
+  utils:
+    build: examples/stream/python/
+    volumes:
+      - ~/.aws:/root/.aws:ro
+      - ./examples/:/home/project
