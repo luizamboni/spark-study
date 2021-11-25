@@ -3,10 +3,11 @@ import time, sys
 
 host = sys.argv[1] if len(sys.argv[1:2]) else "localhost"
 port = sys.argv[2] if len(sys.argv[2:3]) else "9094"
-host_and_port = f"{host}:{port}"
-topic = 'foobar'
+topic = sys.argv[3] if len(sys.argv[3:4]) else "foobar"
 
-print(host_and_port)
+
+host_and_port = f"{host}:{port}"
+
 admin_client = KafkaAdminClient(
     bootstrap_servers=host_and_port, 
     client_id='test'
@@ -37,5 +38,6 @@ try:
         ],
         validate_only=False
     )
+    print("topic created")
 except Exception as err:
     print(err)

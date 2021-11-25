@@ -25,7 +25,7 @@ ds = spark \
   .option("subscribe", topic) \
   .load()
 
-formated_df = ds.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
+# df = ds.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
 
-write_stream = formated_df.writeStream.format("console").start()
+write_stream = ds.writeStream.format("console").start()
 write_stream.awaitTermination()

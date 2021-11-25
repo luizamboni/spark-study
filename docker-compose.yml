@@ -23,6 +23,13 @@ services:
     depends_on:
       - zookeeper
 
+  kafka-admin:
+    image: obsidiandynamics/kafdrop:3.27.0
+    ports:
+      - 9000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092,localhost:9094
+
   glue:
     image: amazon/aws-glue-libs:glue_libs_1.0.0_image_01
     ports:
@@ -31,13 +38,14 @@ services:
       - 9999:9999
     environment:
       PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/maven/bin:/home/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8/bin/"
-
     volumes:
       - ~/.aws:/root/.aws:ro
-      - ./examples/:/home/project
+      - ./examples/:/home/project/examples/
     
   utils:
     build: examples/stream/python/
     volumes:
       - ~/.aws:/root/.aws:ro
-      - ./examples/:/home/project
+      - ./examples/:/home/project/examples/
+
+

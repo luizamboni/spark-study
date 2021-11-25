@@ -4,9 +4,9 @@ import sys
 
 host = sys.argv[1] if len(sys.argv[1:2]) else "localhost"
 port = sys.argv[2] if len(sys.argv[2:3]) else "9094"
+topic = sys.argv[3] if len(sys.argv[3:4]) else "foobar"
 
 host_and_port = f"{host}:{port}"
-topic = 'foobar'
 partition = 0
 
 consumer = KafkaConsumer(
