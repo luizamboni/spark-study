@@ -5,16 +5,17 @@ from typing import Optional
 class ArgsInterface:
   host: Optional[str]
   topic: Optional[str]
-  
+
   def __init__(self, host: str, topic: str):
-    self.topic = topic
-    self.host = host
+      self.host = host
+      self.topic = topic
 
 def get_args() -> ArgsInterface:
 
   parser = argparse.ArgumentParser()
   parser.add_argument('--host')
   parser.add_argument('--topic')
+
   args = parser.parse_args()
 
   return ArgsInterface(args.host, args.topic)
@@ -29,14 +30,27 @@ ds = spark \
   .format("kafka") \
   .option("kafka.bootstrap.servers", args.host) \
   .option("subscribe", args.topic) \
+  .option("startingOffsets", "earliest") \
   .load()
 
 formated_df = ds.selectExpr(
   "CAST(key AS STRING)", "CAST(value AS STRING)", "topic", "partition", "offset", "timestamp", "timestampType"
 )
 
-formated_df.writeStream \
-  .format("console") \
-  .start() \
-  .awaitTermination()
+writeStream = formated_df.writeStream \
+  .format("console")
+
+
+# comment and uncomment to use other trigger strategies
+# writeStream = writeStream.trigger(processingTime='20 seconds')
+writeStream = writeStream.trigger(once=True)
+# writeStream = writeStream.trigger(continuous='10 second')
+
+writeStream = writeStream.option(
+                "checkpointLocation", 
+                "file:////home/project/examples/stream/spark/_checkpoints/a",
+            )
+
+writeStream.start() \
+           .awaitTermination()
   
