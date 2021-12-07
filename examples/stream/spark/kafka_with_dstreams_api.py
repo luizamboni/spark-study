@@ -2,18 +2,32 @@ import sys
 from pyspark import SparkContext
 from pyspark.streaming.kafka import KafkaUtils
 from pyspark.streaming import StreamingContext
+import argparse
+from typing import Optional
+
+class ArgsInterface:
+  host: Optional[str]
+  topic: Optional[str]
+  
+  def __init__(self, host: str, topic: str):
+    self.topic = topic
+    self.host = host
+
+def get_args() -> ArgsInterface:
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--host')
+  parser.add_argument('--topic')
+  args = parser.parse_args()
+
+  return ArgsInterface(args.host, args.topic)
+
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-      print(
-        "Usage: *.py <hostname> <port>", 
-        file=sys.stderr
-      )
-      sys.exit(-1)
-  
-    host = sys.argv[1]
-    port = int(sys.argv[2])
-    topic = sys.argv[3]
+
+    args = get_args()
+    topic = args.topic
+    host = args.host
 
     sc = SparkContext(appName="PythonStreamingNetworkWordCount")
     sc.setLogLevel("ERROR")
@@ -25,7 +39,7 @@ if __name__ == "__main__":
     ssc = StreamingContext(sc, 10)
     kafkaStream = KafkaUtils.createStream(
       ssc, 
-      f"{host}:{port}", 
+      host, 
       "spark-streaming",  # consumer group_id
       per_topic_partitions
     )

@@ -1,14 +1,29 @@
 from kafka import KafkaProducer
-import sys
+import argparse
+from typing import Optional
+class ArgsInterface:
+  host: Optional[str]
+  topic: Optional[str]
+  
+  def __init__(self, host: str, topic: str):
+    self.topic = topic
+    self.host = host
 
-host = sys.argv[1] if len(sys.argv[1:2]) else "localhost"
-port = sys.argv[2] if len(sys.argv[2:3]) else "9094"
-topic = sys.argv[3] if len(sys.argv[3:4]) else "foobar"
+def get_args() -> ArgsInterface:
 
-host_and_port = f"{host}:{port}"
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--host')
+  parser.add_argument('--topic')
+  args = parser.parse_args()
+
+  return ArgsInterface(args.host, args.topic)
+
+args = get_args()
+# print(args.host)
+# print(args.topic)
 
 producer = KafkaProducer(
-    bootstrap_servers=host_and_port
+    bootstrap_servers=args.host
 )
 
 for i in range(10):
@@ -17,7 +32,7 @@ for i in range(10):
         key = b"key-value"
         print("before send")
         future = producer.send(
-            topic,
+            args.topic,
             key=key,
             value=message
         )

@@ -12,14 +12,16 @@ run-kafka-spark-job-dstream:
 		spark-submit \
 		--packages org.apache.spark:spark-streaming-kafka-0-8_$$SCALA_VERSION:$$SPARK_VERSION \
 		/home/project/examples/stream/spark/kafka_with_dstreams_api.py \
-		zookeeper 2181 foobar
+		--host=zookeeper:2181 \
+		--topic=foobar
 
 run-kafka-spark-job-df-api:
 	docker-compose run --rm glue \
 		spark-submit \
 		--packages org.apache.spark:spark-sql-kafka-0-10_$$SCALA_VERSION:$$SPARK_VERSION \
 		/home/project/examples/stream/spark/kafka_with_dataframe_api.py \
-		kafka 9092 foobar
+		--host=kafka:9092 \
+		--topic=foobar
 
 attach-utils:
 	docker-compose run --rm utils /bin/bash
@@ -28,11 +30,19 @@ attach-glue:
 	docker-compose run --rm glue /bin/bash
 
 run-kafka-produce:
-	docker-compose run --rm utils python3 examples/stream/python/kafka-producer.py kafka 9092 foobar
-
+	docker-compose run --rm utils \
+	python3 examples/stream/python/kafka-producer.py \
+	--host=kafka:9092 \
+	--topic=foobar
 
 run-kafka-setup:
-	docker-compose run --rm utils python3 examples/stream/python/kafka-setup.py kafka 9092 foobar
+	docker-compose run --rm utils \
+	python3 examples/stream/python/kafka-setup.py \
+	--host=kafka:9092 \
+	--topic=foobar
 
 run-kafka-consumer:
-	docker-compose run --rm utils python3 examples/stream/python/kafka-consumer.py kafka 9092 foobar
+	docker-compose run --rm utils \
+	python3 examples/stream/python/kafka-consumer.py \
+	--host=kafka:9092 \
+	--topic=foobar

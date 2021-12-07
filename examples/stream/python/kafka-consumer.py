@@ -1,17 +1,30 @@
-from sys import argv
 from kafka import KafkaConsumer
-import sys
+import argparse
+from typing import Optional
+class ArgsInterface:
+  topic: Optional[str]
+  host: Optional[str]
+  
+  def __init__(self, topic: Optional[str], host: Optional[str]):
+    self.topic = topic
+    self.host = host
 
-host = sys.argv[1] if len(sys.argv[1:2]) else "localhost"
-port = sys.argv[2] if len(sys.argv[2:3]) else "9094"
-topic = sys.argv[3] if len(sys.argv[3:4]) else "foobar"
+def get_args() -> ArgsInterface:
 
-host_and_port = f"{host}:{port}"
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--topic', default=None)
+  parser.add_argument('--host', default=None)
+  args = parser.parse_args()
+
+  return ArgsInterface(args.topic, args.host)
+
+args = get_args()
+
 partition = 0
 
 consumer = KafkaConsumer(
-    topic,
-    bootstrap_servers=host_and_port,
+    args.topic,
+    bootstrap_servers=args.host,
     auto_offset_reset='earliest',
     group_id="teste"
     # auto_offset_reset=-10
