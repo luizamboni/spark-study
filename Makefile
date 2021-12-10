@@ -33,7 +33,9 @@ run-kafka-produce:
 	docker-compose run --rm utils \
 	python3 examples/stream/python/kafka-producer.py \
 	--host=kafka:9092 \
-	--topic=foobar
+	--topic=foobar \
+	--volume=1000 \
+	--infinity=true
 
 run-kafka-setup:
 	docker-compose run --rm utils \
