@@ -1,5 +1,6 @@
 
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, window
 import argparse
 from typing import Optional
 class ArgsInterface:
@@ -37,19 +38,38 @@ formated_df = ds.selectExpr(
   "CAST(key AS STRING)", "CAST(value AS STRING)", "topic", "partition", "offset", "timestamp", "timestampType"
 )
 
-writeStream = formated_df.writeStream \
-  .format("console")
+## complete output mode
+grouped_df = formated_df.groupBy('key') \
+                        .count() \
 
+grouped_df.writeStream.format("console") \
+                      .outputMode("complete") \
+                      .start()
+
+## append with whatermark
+grouped_df = formated_df.withWatermark("timestamp", "10 seconds") \
+                        .groupBy(
+                          window(col('timestamp'), "10 seconds", "5 seconds"),
+                          col('key')
+                        ) \
+                        .count() \
+                        .writeStream \
+                        .format("console") \
+                        .outputMode("append") \
+                        .start()
+
+writeStream = formated_df.writeStream \
+                        .format("console")
 
 # comment and uncomment to use other trigger strategies
 # writeStream = writeStream.trigger(processingTime='20 seconds')
-writeStream = writeStream.trigger(once=True)
+# writeStream = writeStream.trigger(once=True)
 # writeStream = writeStream.trigger(continuous='10 second')
 
 writeStream = writeStream.option(
-                "checkpointLocation", 
-                "file:////home/project/examples/stream/spark/_checkpoints/a",
-            )
+  "checkpointLocation", 
+  "file:////home/project/examples/stream/spark/_checkpoints/a",
+)
 
 writeStream.start() \
            .awaitTermination()

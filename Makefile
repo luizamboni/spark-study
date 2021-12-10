@@ -34,7 +34,7 @@ run-kafka-produce:
 	python3 examples/stream/python/kafka-producer.py \
 	--host=kafka:9092 \
 	--topic=foobar \
-	--volume=1000 \
+	--volume=10 \
 	--infinity=true
 
 run-kafka-setup:
