@@ -15,6 +15,9 @@ run-kafka-spark-job-dstream:
 		--host=zookeeper:2181 \
 		--topic=foobar
 
+run-kafka-clean-checkpoint:
+	docker-compose run --rm glue rm -rf /home/project/examples/stream/spark/checkpoints/*
+
 run-kafka-spark-job-df-api:
 	docker-compose run --rm glue \
 		spark-submit \

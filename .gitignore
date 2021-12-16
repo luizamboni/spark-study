@@ -1,2 +1,3 @@
 examples/stream/spark/_checkpoints
 **/__pycache__
+examples/stream/spark/_checkpoint/
