@@ -2,6 +2,16 @@ import os
 import argparse
 from pyspark.sql import SparkSession
 from typing import Optional
+import boto3
+
+def list_buckets():
+  s3 = boto3.client('s3')
+  response = s3.list_buckets()
+
+  # Output the bucket names
+  print('Existing buckets:')
+  for bucket in response['Buckets']:
+      print(f'  {bucket["Name"]}')
 class ArgsInterface:
   host: Optional[str]
   topic: Optional[str]
@@ -99,7 +109,9 @@ if __name__ == "__main__":
   checkpointDir = f"file:///{os.path.dirname(__file__)}/_checkpoint"
 
   args = get_args()
-
+  
+  list_buckets()
+  
   spark = SparkSession.builder.appName("streamReader").getOrCreate()
   spark.sparkContext.setLogLevel("ERROR")
 
