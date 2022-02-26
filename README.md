@@ -4,7 +4,7 @@ This repo have intent to aid run small snipets of spark with some aws localy in 
 
 to init env
 ```shell
-$ make up-container
+$ make up
 ```
 
 to enter in environment
@@ -28,7 +28,7 @@ watch echo "hello world" | nc -l -p 9999
 
 after in another terminal
 ```
-spark-submit /home/project/stream/spark/network_wordcount.py localhost 9999
+spark-submit /opt/bitnami/spark/jobs/stream/spark/network_wordcount.py localhost 9999
 ```
 
 ```
