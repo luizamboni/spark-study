@@ -1,36 +1,28 @@
 
 # this versions is constrainerd by glue image
-export SPARK_VERSION=2.4.0
-export SCALA_VERSION=2.11
+export SPARK_VERSION=3.1.2
+export SCALA_VERSION=2.12
 
+include .env
 
 up:
 	docker-compose up -d zookeeper kafka-admin kafka
 
-run-kafka-spark-job-dstream:
-	docker-compose run --rm glue \
-		spark-submit \
-		--packages org.apache.spark:spark-streaming-kafka-0-8_$$SCALA_VERSION:$$SPARK_VERSION \
-		/home/project/examples/stream/spark/kafka_with_dstreams_api.py \
-		--host=zookeeper:2181 \
-		--topic=foobar
-
 run-kafka-clean-checkpoint:
-	docker-compose run --rm glue rm -rf /home/project/examples/stream/spark/checkpoints/*
+	docker-compose run --rm spark \
+	rm -rf  /opt/bitnami/spark/jobs/stream/spark/_checkpoints  /opt/bitnami/spark/jobs/stream/spark/_checkpoint
 
 run-kafka-spark-job-df-api:
-	docker-compose run --rm glue \
+	docker-compose run --rm spark \
 		spark-submit \
-		--packages org.apache.spark:spark-sql-kafka-0-10_$$SCALA_VERSION:$$SPARK_VERSION \
-		/home/project/examples/stream/spark/kafka_with_dataframe_api.py \
+		--packages org.apache.spark:spark-sql-kafka-0-10_${SCALA_VERSION}:${SPARK_VERSION} \
+		/opt/bitnami/spark/jobs/stream/spark/kafka_with_dataframe_api.py \
 		--host=kafka:9092 \
 		--topic=foobar
 
 attach-utils:
 	docker-compose run --rm utils /bin/bash
 
-attach-glue:
-	docker-compose run --rm glue /bin/bash
 
 run-kafka-produce:
 	docker-compose run --rm utils \
@@ -50,4 +42,6 @@ run-kafka-consumer:
 	docker-compose run --rm utils \
 	python3 examples/stream/python/kafka-consumer.py \
 	--host=kafka:9092 \
-	--topic=foobar
+	--topic=foobar \
+	--group_id=teste2 \
+	--length=10
