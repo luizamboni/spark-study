@@ -12,9 +12,8 @@ from awsglue.transforms import *
 from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 # aditional imports
-from pyspark.sql.functions import sum
-from awsglue.dynamicframe import DynamicFrame
-from pyspark.sql.functions import split, explode
+
+from pyspark.sql.functions import explode
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType, ArrayType
 
 sc = SparkContext.getOrCreate()
