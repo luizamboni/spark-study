@@ -47,3 +47,27 @@ bli bli bli
 bib bi bi
 bla bla bla
 ```
+
+# kafka examples
+to run kafka s
+```shell
+make run
+```
+
+to create/recreate topic
+```shell
+make run-kafka-setup
+```
+
+to produce messages
+```shell
+make run-kafka-produce
+```
+
+to consume topic
+```shell
+make run-kafka-consumer
+```
+
+look in Makefile to see detais and modify arguments
+
