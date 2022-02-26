@@ -1,6 +1,6 @@
-aws Glue/Spark study
+Spark study
 ===
-This repo have intent to aid run small snipets of aws glue localy in a containered
+This repo have intent to aid run small snipets of spark with some aws localy in a containered env
 
 to init env
 ```shell
