@@ -5,3 +5,4 @@ examples/stream/spark/_checkpoint/
 .env
 spark-events
 data
+.ipynb_checkpoints
