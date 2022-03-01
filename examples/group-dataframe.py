@@ -2,7 +2,11 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from functools import reduce
 
-spark = SparkSession.builder.appName("group-rdd").getOrCreate()
+spark = SparkSession.builder \
+        .config("spark.eventLog.enabled", "true") \
+        .config("spark.eventLog.dir", "/tmp/spark-events/") \
+        .appName("group-rdd") \
+        .getOrCreate()
 
 
 attrs_data = [

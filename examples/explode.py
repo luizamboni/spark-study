@@ -3,7 +3,11 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType, ArrayType
 
-spark = SparkSession.builder.appName("explode-example").getOrCreate()
+spark = SparkSession.builder \
+        .config("spark.eventLog.enabled", "true") \
+        .config("spark.eventLog.dir", "/tmp/spark-events/") \
+        .appName("explode-example") \
+        .getOrCreate()
 
 data = [
     (

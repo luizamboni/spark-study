@@ -12,6 +12,7 @@ def list_buckets():
   print('Existing buckets:')
   for bucket in response['Buckets']:
       print(f'  {bucket["Name"]}')
+
 class ArgsInterface:
   host: Optional[str]
   topic: Optional[str]
@@ -112,7 +113,12 @@ if __name__ == "__main__":
   
   list_buckets()
   
-  spark = SparkSession.builder.appName("streamReader").getOrCreate()
+  spark = SparkSession.builder \
+        .appName("streamReader") \
+        .config("spark.eventLog.enabled", "true") \
+        .config("spark.eventLog.dir", "/tmp/spark-events/") \
+        .getOrCreate()
+  
   spark.sparkContext.setLogLevel("ERROR")
 
   ds = spark \

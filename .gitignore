@@ -3,3 +3,5 @@ examples/stream/spark/_checkpoints
 examples/stream/spark/_checkpoint/
 *.log
 .env
+spark-events
+data
