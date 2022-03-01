@@ -44,10 +44,34 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_ACCOUNT=${AWS_ACCOUNT}
     ports:
-      - '8080:8080'
+      - 8080:8080 # i forgot why it port is mapped, pehaps a copy-and-paste 
+      - 8888:8888
     user: root
     volumes:
+      - ./spark-events/:/tmp/spark-events/
       - ./examples/:/opt/bitnami/spark/jobs/
+    command:
+      jupyter notebook --allow-root --NotebookApp.token='' --NotebookApp.password='' --port=8888 --no-browser --ip=0.0.0.0
+  spark-history-server:
+    build: .
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_ACCOUNT=${AWS_ACCOUNT}
+    ports:
+      - 18080:18080
+    user: root
+    volumes:
+      - ./spark-events/:/tmp/spark-events/
+    command:
+      sbin/start-history-server.sh
 
   utils:
     build: ./examples/stream/python/.
