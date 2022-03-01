@@ -1,13 +1,8 @@
-import sys
-from awsglue.transforms import *
-from pyspark.context import SparkContext
-from awsglue.context import GlueContext
-from pyspark.sql.functions import col, collect_list
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 from functools import reduce
 
-sc = SparkContext.getOrCreate()
-gc = GlueContext(sc)
-spark = gc.spark_session
+spark = SparkSession.builder.appName("group-rdd").getOrCreate()
 
 
 attrs_data = [
@@ -48,14 +43,9 @@ offer_data = [
 ]
 
 
-attrs_df = sc.parallelize(attrs_data).toDF(["id","name", "value"])
-offer_df = sc.parallelize(offer_data).toDF(["id","name", "prod_id", "cat_id"])
+attrs_df = spark.sparkContext.parallelize(attrs_data).toDF(["id","name", "value"])
+offer_df = spark.sparkContext.parallelize(offer_data).toDF(["id","name", "prod_id", "cat_id"])
 
-
-lst_of_dicts_df = attrs_df.select(
-    collect_list("age").alias("age"),
-    collect_list("salary").alias("salary"),
-)
   
 # group in attributes column
 lst_of_dicts_df = attrs_df.rdd.map(

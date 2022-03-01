@@ -1,25 +1,9 @@
-# Json Data
-# {
-#   "id": String
-#   "products_count": Number
-#   "products: [
-#     { "id": Number , "t": String , "cpc": Number }
-#   ]
-# }
-
-import sys
-from awsglue.transforms import *
-from pyspark.context import SparkContext
-from awsglue.context import GlueContext
-# aditional imports
+from pyspark.sql import SparkSession
 
 from pyspark.sql.functions import explode
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType, ArrayType
 
-sc = SparkContext.getOrCreate()
-glueContext = GlueContext(sc)
-spark = glueContext.spark_session
-
+spark = SparkSession.builder.appName("explode-example").getOrCreate()
 
 data = [
     (
@@ -59,7 +43,7 @@ schema = StructType([
     )
 ])
 
-df = sc.parallelize(data).toDF(schema)
+df = spark.sparkContext.parallelize(data).toDF(schema)
 
 sample = df.where("products_count > 0").limit(2).collect()
 
