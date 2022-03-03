@@ -1,4 +1,3 @@
-import sys
 from pyspark import SparkContext
 from pyspark.streaming.kafka import KafkaUtils
 from pyspark.streaming import StreamingContext
