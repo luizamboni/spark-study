@@ -50,8 +50,10 @@ services:
     volumes:
       - ./spark-events/:/tmp/spark-events/
       - ./examples/:/opt/bitnami/spark/jobs/
+      - ./configs/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     command:
       jupyter notebook --allow-root --NotebookApp.token='' --NotebookApp.password='' --port=8888 --no-browser --ip=0.0.0.0
+
   spark-history-server:
     build: .
     environment:
