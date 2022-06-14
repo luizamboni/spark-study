@@ -46,13 +46,14 @@ services:
     ports:
       - 8080:8080 # i forgot why it port is mapped, pehaps a copy-and-paste 
       - 8888:8888
+      - 10000:10000 # thrift-server
     user: root
     volumes:
       - ./spark-events/:/tmp/spark-events/
       - ./examples/:/opt/bitnami/spark/jobs/
       - ./configs/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
-    command:
-      jupyter notebook --allow-root --NotebookApp.token='' --NotebookApp.password='' --port=8888 --no-browser --ip=0.0.0.0
+    # command:
+    #   jupyter notebook --allow-root --NotebookApp.token='' --NotebookApp.password='' --port=8888 --no-browser --ip=0.0.0.0
 
   spark-history-server:
     build: .

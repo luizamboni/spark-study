@@ -5,8 +5,11 @@ RUN pip install boto3 notebook ipython
 ENV PYTHONPATH=/opt/bitnami/spark/python/:/opt/bitnami/spark/python/lib/py4j-0.10.9-src.zip:$PYTHONPATH
 
 COPY ./examples/ /opt/bitnami/spark/jobs/
+COPY ./entrypoint.sh /opt/bitnami/spark/entrypoint.sh
 # to run history server
 RUN mkdir /tmp/spark-events
+
 USER 1001
 
-CMD [ "bash" ]
+
+ENTRYPOINT [ "bash", "./entrypoint.sh" ]
